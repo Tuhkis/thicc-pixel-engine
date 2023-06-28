@@ -4,9 +4,6 @@
 [submodule "external/font8x8"]
 	path = external/font8x8
 	url = https://github.com/daveythacher/font8x8.git
-[submodule "external/cmixer"]
-	path = external/cmixer
-	url = https://github.com/rxi/cmixer.git
 [submodule "external/stb"]
 	path = external/stb
 	url = https://github.com/nothings/stb
