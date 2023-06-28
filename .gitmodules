@@ -1,0 +1,6 @@
+[submodule "external/glfw"]
+	path = external/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "external/font8x8"]
+	path = external/font8x8
+	url = https://github.com/daveythacher/font8x8.git
