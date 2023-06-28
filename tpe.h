@@ -17,7 +17,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "external/glad/include/glad/glad.h"
-#include "external/cmixer/src/cmixer.h"
 
 #ifdef TPE_IMPL
 #ifdef __cplusplus
@@ -31,7 +30,6 @@ extern "C" {
 #include "ex-impl/glfw-impl.h"
 #include "external/stb/stb_vorbis.c"
 #define CM_USE_STB_VORBIS
-#include "external/cmixer/src/cmixer.c"
 GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 == 2);}
 #else
 #define GLFW_INCLUDE_ES2
@@ -294,11 +292,9 @@ extern "C" {
 	}
 
 	T(Audio) T(loadSound)(const char* path) {
-		return cm_new_source_from_file(path);
 	}
 	
 	void T(playSound)(T(Audio) a) {
-		cm_play(a);
 	}
 	
 #endif // TPE_IMPL

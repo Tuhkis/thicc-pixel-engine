@@ -11,6 +11,9 @@ int main() {
 
 	float now, prev = 0.f;
 
+	tpe_Audio audio = tpe_loadSound("demo/chomp.ogg");
+	tpe_playSound(audio);
+
 	while (!tpe_shouldClose(ctx)) {
 		bool show = tpe_keyDown(ctx, TPE_KEY(SPACE));
 		tpe_clear(&ctx);
