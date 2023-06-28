@@ -2,7 +2,7 @@
 #define __TPE_H__
 
 // For debugging purposes
-// #define TPE_IMPL
+#define TPE_IMPL
 
 #ifndef TPE_W
 #define TPE_W 200
@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "external/glad/include/glad/glad.h"
+#include "external/miniaudio/miniaudio.h"
 
 #ifdef TPE_IMPL
 #ifdef __cplusplus
@@ -28,8 +29,10 @@ extern "C" {
 #endif
 #include "external/glad/src/glad.c"
 #include "ex-impl/glfw-impl.h"
-#include "external/stb/stb_vorbis.c"
-#define CM_USE_STB_VORBIS
+// #include "external/stb/stb_vorbis.c"
+#define MINIAUDIO_IMPLEMENTATION
+#define MA_ENABLE_ALSA
+#include "external/miniaudio/miniaudio.h"
 GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 == 2);}
 #else
 #define GLFW_INCLUDE_ES2
@@ -55,9 +58,8 @@ extern "C" {
 		GLubyte pixels[TPE_W * TPE_H * 3];
 		GLubyte clearPixels[TPE_W * TPE_H * 3];
 		GLubyte prevPixels[TPE_W * TPE_H * 3];
+		ma_engine* soundEngine;
 	} T(Context);
-
-	typedef cm_Source* T(Audio);
 
 	INLINE void T(init) (T(Context) * ctx, const char* winName);
 	INLINE bool T(shouldClose)(T(Context) ctx);
@@ -76,8 +78,7 @@ extern "C" {
 	void T(drawGlyph)(T(Context) * ctx, char* glyph, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawText)(T(Context) * ctx, const char* text, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawRect)(T(Context) * ctx, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned char r, unsigned char g, unsigned char b);
-	T(Audio) T(loadSound)(const char* path);
-	void T(playSound)(T(Audio) a);
+	void T(playSound)(T(Context) * ctx, const char* path);
 
 #ifdef TPE_IMPL
 	INLINE void T(init) (T(Context) * ctx, const char* winName) {
@@ -176,7 +177,10 @@ extern "C" {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		// Audio
-		cm_init(44100);
+		ma_result result  = ma_engine_init(NULL, ctx->soundEngine);
+		if (result != MA_SUCCESS) {
+			printf("Could not initialise sound engine.\n");
+		}
 	}
 
 	INLINE bool T(shouldClose)(T(Context) ctx) {
@@ -201,6 +205,7 @@ extern "C" {
 	}
 
 	INLINE void T(close)(T(Context) * ctx) {
+		ma_engine_uninit(ctx->soundEngine);
 		glDeleteVertexArrays(1, &ctx->vao);
 		glDeleteBuffers(1, &ctx->vbo);
 		glDeleteBuffers(1, &ctx->ebo);
@@ -291,10 +296,8 @@ extern "C" {
 				T(putPixel)(ctx, x + dx, y + dy, r, g, b);
 	}
 
-	T(Audio) T(loadSound)(const char* path) {
-	}
-	
-	void T(playSound)(T(Audio) a) {
+	void T(playSound)(T(Context) * ctx, const char* path) {
+		ma_engine_play_sound(ctx->soundEngine, path, NULL);
 	}
 	
 #endif // TPE_IMPL
