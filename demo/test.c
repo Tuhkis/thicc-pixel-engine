@@ -23,6 +23,8 @@ int main() {
 		for (int i = 0; i < 16; ++i)
 			tpe_putPixel(&ctx, i + 16, i, 255, 66, 0);
 		tpe_drawText(&ctx, "Hello world!", 55, 55, 0, 0, 0);
+		tpe_drawRect(&ctx, 0, 64, 200, 3, 255, 0, 0);
+		tpe_drawRect(&ctx, 64, 64, 32, 32, 255, 255, 0);
 		now = tpe_time();
 		float dt = (now - prev);
 		prev = now;

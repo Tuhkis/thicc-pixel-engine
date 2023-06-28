@@ -2,7 +2,7 @@
 #define __TPE_H__
 
 // For debugging purposes
-// #define TPE_IMPL
+#define TPE_IMPL
 
 #ifndef TPE_W
 #define TPE_W 200
@@ -71,6 +71,7 @@ extern "C" {
 	INLINE bool T(keyDown)(T(Context) ctx, unsigned char k);
 	void T(drawGlyph)(T(Context) * ctx, char* glyph, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawText)(T(Context) * ctx, const char* text, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
+	void T(drawRect)(T(Context) * ctx, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned char r, unsigned char g, unsigned char b);
 
 #ifdef TPE_IMPL
 	INLINE void T(init) (T(Context) * ctx, const char* winName) {
@@ -276,6 +277,12 @@ extern "C" {
 			ctx, font8x8_basic[text[t]], x + t * 8, y, r, g, b);
 	}
 	
+	void T(drawRect)(T(Context) * ctx, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned char r, unsigned char g, unsigned char b) {
+		for (unsigned short dx = 0; dx < w; ++dx)
+			for (unsigned short dy = 0; dy < h; ++dy)
+				T(putPixel)(ctx, x + dx, y + dy, r, g, b);
+	}
+
 #endif // TPE_IMPL
 
 #ifdef __cplusplus
