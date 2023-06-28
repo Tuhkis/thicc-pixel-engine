@@ -2,7 +2,7 @@
 #define __TPE_H__
 
 // For debugging purposes
-#define TPE_IMPL
+// #define TPE_IMPL
 
 #ifndef TPE_W
 #define TPE_W 200
