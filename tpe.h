@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "external/glad/include/glad/glad.h"
+#include "external/cmixer/src/cmixer.h"
 
 #ifdef TPE_IMPL
 #ifdef __cplusplus
@@ -28,6 +29,9 @@ extern "C" {
 #endif
 #include "external/glad/src/glad.c"
 #include "ex-impl/glfw-impl.h"
+#include "external/stb/stb_vorbis.c"
+#define CM_USE_STB_VORBIS
+#include "external/cmixer/src/cmixer.c"
 GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 == 2);}
 #else
 #define GLFW_INCLUDE_ES2
@@ -55,6 +59,8 @@ extern "C" {
 		GLubyte prevPixels[TPE_W * TPE_H * 3];
 	} T(Context);
 
+	typedef cm_Source* T(Audio);
+
 	INLINE void T(init) (T(Context) * ctx, const char* winName);
 	INLINE bool T(shouldClose)(T(Context) ctx);
 	INLINE void T(display)(T(Context) ctx);
@@ -72,6 +78,8 @@ extern "C" {
 	void T(drawGlyph)(T(Context) * ctx, char* glyph, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawText)(T(Context) * ctx, const char* text, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawRect)(T(Context) * ctx, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned char r, unsigned char g, unsigned char b);
+	T(Audio) T(loadSound)(const char* path);
+	void T(playSound)(T(Audio) a);
 
 #ifdef TPE_IMPL
 	INLINE void T(init) (T(Context) * ctx, const char* winName) {
@@ -169,6 +177,8 @@ extern "C" {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+		// Audio
+		cm_init(44100);
 	}
 
 	INLINE bool T(shouldClose)(T(Context) ctx) {
@@ -283,6 +293,14 @@ extern "C" {
 				T(putPixel)(ctx, x + dx, y + dy, r, g, b);
 	}
 
+	T(Audio) T(loadSound)(const char* path) {
+		return cm_new_source_from_file(path);
+	}
+	
+	void T(playSound)(T(Audio) a) {
+		cm_play(a);
+	}
+	
 #endif // TPE_IMPL
 
 #ifdef __cplusplus

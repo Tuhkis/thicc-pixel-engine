@@ -19,3 +19,5 @@ gcc -lkernel32 -luser32 -lshell32 -lgdi32 -ladvapi32 -lopengl32 myfile.c
  - [Font8x8](https://github.com/daveythacher/font8x8)
  - [GLFW](https://github.com/glfw/glfw)
  - [GLAD](https://github.com/Dav1dde/glad)
+ - [STB](https://github.com/nothings/stb)
+ - [cmixer](https://github.com/rxi/cmixer)
