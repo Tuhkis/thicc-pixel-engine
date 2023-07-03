@@ -31,7 +31,6 @@ extern "C" {
 #include "ex-impl/glfw-impl.h"
 // #include "external/stb/stb_vorbis.c"
 #define MINIAUDIO_IMPLEMENTATION
-#define MA_ENABLE_ALSA
 #include "external/miniaudio/miniaudio.h"
 GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 == 2);}
 #else
@@ -40,7 +39,6 @@ GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 ==
 #include "external/glfw/include/GLFW/glfw3.h"
 #ifdef __cplusplus
 #define T(T) T
-#define KEY(K) KEY_##K = GLFW_KEY_##K
 #define TPE_KEY(K) GLFW_KEY_##K
 #define INLINE extern inline
 namespace tpe {
