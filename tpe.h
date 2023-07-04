@@ -2,7 +2,7 @@
 #define __TPE_H__
 
 // For debugging purposes
-// #define TPE_IMPL
+#define TPE_IMPL
 
 #ifndef TPE_W
 #define TPE_W 200
@@ -23,9 +23,17 @@
 
 #ifdef __EMSCRIPTEN__
 #define TPE_SHADER_VERSION "330 es"
+#define TPE_WEB
+#include <emscripten/html5.h>
 #else
 #define TPE_SHADER_VERSION "330 core"
 #endif // __EMSCRIPTEN__
+
+#ifndef TPE_WEB
+#define TPE_KEY(K) GLFW_KEY_##K
+#else 
+#define TPE_KEY(K) 0
+#endif // TPE_WEB
 
 #ifdef TPE_IMPL
 #ifdef __cplusplus
@@ -36,31 +44,37 @@ extern "C" {
 }
 #endif
 #include "external/glad/src/glad.c"
+#ifndef TPE_WEB
 #include "ex-impl/glfw-impl.h"
+#endif // TPE_WEB
 // #include "external/stb/stb_vorbis.c"
 #ifdef TPE_SOUND_ENABLED
 #define MINIAUDIO_IMPLEMENTATION
 #include "external/miniaudio/miniaudio.h"
 #endif // TPE_SOUND_ENABLED
+#ifndef TPE_WEB
 GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 == 2);}
+#endif // TPE_WEB
 #else
 #define GLFW_INCLUDE_ES2
 #endif // TPE_IMPL
+#ifndef TPE_WEB
 #include "external/glfw/include/GLFW/glfw3.h"
+#endif // TPE_WEB
 #ifdef __cplusplus
 #define T(T) T
-#define TPE_KEY(K) GLFW_KEY_##K
 #define INLINE extern inline
 namespace tpe {
 extern "C" {
 #else
 #define T(T) tpe_##T
-#define TPE_KEY(K) GLFW_KEY_##K
 #define INLINE extern inline
 #endif // __cplusplus
 	
 	typedef struct {
+#ifndef TPE_WEB
 		GLFWwindow* window;
+#endif // TPE_WEB
 		unsigned int vao, vbo, ebo, shaders, screen;
 		// This is dumb
 		GLubyte pixels[TPE_W * TPE_H * 3];
@@ -96,6 +110,7 @@ extern "C" {
 	INLINE void T(init) (T(Context) * ctx, const char* winName) {
 		T(clearColor)(ctx, 0, 0, 0);
 		// Intialise glfw
+#ifndef TPE_WEB
 		if(!glfwInit()) {
 			printf("Could not initialse glfw.\n");
 			exit(-1);
@@ -113,10 +128,20 @@ extern "C" {
 		}
 		glfwMakeContextCurrent(ctx->window);
 		glfwSwapInterval(1);
+
 		if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)){
 			printf("Failed to initialise GLAD.\n");
 			exit(-1);
 		}
+#else
+		EmscriptenWebGLContextAttributes attr;
+		emscripten_webgl_init_context_attributes(&attr);
+		attr.alpha = 0;
+
+		// target the canvas selector
+		EMSCRIPTEN_WEBGL_CONTEXT_HANDLE wctx = emscripten_webgl_create_context("#canvas", &attr);
+		emscripten_webgl_make_context_current(wctx);
+#endif // TPE_WEB
 
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
@@ -198,7 +223,9 @@ extern "C" {
 	}
 
 	INLINE bool T(shouldClose)(T(Context) ctx) {
+#ifndef TPE_WEB
 		return glfwWindowShouldClose(ctx.window);
+#endif // TPE_WEB
 	}
 
 	INLINE void T(display)(T(Context) ctx) {
@@ -214,8 +241,10 @@ extern "C" {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glUseProgram(0);
 
+#ifndef TPE_WEB
 		glfwSwapBuffers(ctx.window);
 		glfwPollEvents();
+#endif // TPE_WEB
 	}
 
 	INLINE void T(close)(T(Context) * ctx) {
@@ -227,7 +256,9 @@ extern "C" {
 		glDeleteBuffers(1, &ctx->ebo);
 		glDeleteProgram(ctx->shaders);
 		glDeleteTextures(1, &ctx->screen);
+#ifndef TPE_WEB
 		glfwTerminate();
+#endif // TPE_WEB
 	}
 
 	void T(putPixel)(T(Context) * ctx, int x, int y, unsigned char r, unsigned char g, unsigned char b ) {
@@ -257,7 +288,11 @@ extern "C" {
 	}
 
 	INLINE float T(time)() {
+#ifndef TPE_WEB
 		return glfwGetTime();
+#else
+		return 0;
+#endif // TPE_WEB
 	}
 	
 	void T(drawBuffer)(T(Context) * ctx, unsigned char* buf, unsigned short x, unsigned short y, unsigned short w, unsigned short h) {
@@ -286,7 +321,11 @@ extern "C" {
 	}
 
 	INLINE bool T(keyDown)(T(Context) ctx, unsigned char k) {
+#ifndef TPE_WEB
 		return glfwGetKey(ctx.window, k) != GLFW_RELEASE;
+#else
+		return false;
+#endif // TPE_WEB
 	}
 
 	void T(drawGlyph)(T(Context) * ctx, char* glyph, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b) {
