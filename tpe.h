@@ -17,7 +17,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "external/glad/include/glad/glad.h"
+#ifdef TPE_SOUND_ENABLED
 #include "external/miniaudio/miniaudio.h"
+#endif // TPE_SOUND_ENABLED
+
+#ifdef __EMSCRIPTEN__
+#define TPE_SHADER_VERSION "330 es"
+#else
+#define TPE_SHADER_VERSION "330 core"
+#endif // __EMSCRIPTEN__
 
 #ifdef TPE_IMPL
 #ifdef __cplusplus
@@ -30,8 +38,10 @@ extern "C" {
 #include "external/glad/src/glad.c"
 #include "ex-impl/glfw-impl.h"
 // #include "external/stb/stb_vorbis.c"
+#ifdef TPE_SOUND_ENABLED
 #define MINIAUDIO_IMPLEMENTATION
 #include "external/miniaudio/miniaudio.h"
+#endif // TPE_SOUND_ENABLED
 GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 == 2);}
 #else
 #define GLFW_INCLUDE_ES2
@@ -56,7 +66,9 @@ extern "C" {
 		GLubyte pixels[TPE_W * TPE_H * 3];
 		GLubyte clearPixels[TPE_W * TPE_H * 3];
 		GLubyte prevPixels[TPE_W * TPE_H * 3];
+#ifdef TPE_SOUND_ENABLED
 		ma_engine* soundEngine;
+#endif // TPE_SOUND_ENABLED
 	} T(Context);
 
 	INLINE void T(init) (T(Context) * ctx, const char* winName);
@@ -76,7 +88,9 @@ extern "C" {
 	void T(drawGlyph)(T(Context) * ctx, char* glyph, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawText)(T(Context) * ctx, const char* text, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawRect)(T(Context) * ctx, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned char r, unsigned char g, unsigned char b);
+#ifdef TPE_SOUND_ENABLED
 	void T(playSound)(T(Context) * ctx, const char* path);
+#endif // TPE_SOUND_ENABLED
 
 #ifdef TPE_IMPL
 	INLINE void T(init) (T(Context) * ctx, const char* winName) {
@@ -108,7 +122,7 @@ extern "C" {
 		glEnable(GL_TEXTURE_2D);
 		// glDisable(GL_TEXTURE_2D);
 		// VERTEX SHADER
-		const char* vertexShaderSource = "#version 330 core\n"
+		const char* vertexShaderSource = "#version " TPE_SHADER_VERSION "\n"
 			"layout (location = 0) in vec3 aPos;\n"
 			"out vec2 texPos;\n"
 			"void main()\n"
@@ -121,7 +135,7 @@ extern "C" {
 		glCompileShader(vertexShader);
 
 		// FRAGMENT SHADER
-		const char* fragmentShaderSource = "#version 330 core\n"
+		const char* fragmentShaderSource = "#version " TPE_SHADER_VERSION "\n"
 			"out vec4 FragColor;\n"
 			"in vec2 texPos;\n"
 			"uniform sampler2D screen;\n"
@@ -174,11 +188,13 @@ extern "C" {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+#ifdef TPE_SOUND_ENABLED
 		// Audio
 		ma_result result  = ma_engine_init(NULL, ctx->soundEngine);
 		if (result != MA_SUCCESS) {
 			printf("Could not initialise sound engine.\n");
 		}
+#endif // TPE_SOUND_ENABLED
 	}
 
 	INLINE bool T(shouldClose)(T(Context) ctx) {
@@ -203,7 +219,9 @@ extern "C" {
 	}
 
 	INLINE void T(close)(T(Context) * ctx) {
+#ifdef TPE_SOUND_ENABLED
 		ma_engine_uninit(ctx->soundEngine);
+#endif // TPE_SOUND_ENABLED
 		glDeleteVertexArrays(1, &ctx->vao);
 		glDeleteBuffers(1, &ctx->vbo);
 		glDeleteBuffers(1, &ctx->ebo);
@@ -294,9 +312,11 @@ extern "C" {
 				T(putPixel)(ctx, x + dx, y + dy, r, g, b);
 	}
 
+#ifdef TPE_SOUND_ENABLED
 	void T(playSound)(T(Context) * ctx, const char* path) {
 		ma_engine_play_sound(ctx->soundEngine, path, NULL);
 	}
+#endif // TPE:SOUND_ENABLED
 	
 #endif // TPE_IMPL
 
