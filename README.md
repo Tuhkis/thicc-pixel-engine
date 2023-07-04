@@ -1,6 +1,8 @@
 # Thicc Pixel Engine
 A header-only C/C++ framework for making games with *thicc* pixels.
 ## Building
+WARN: WASM build doesn't work.
+<br>
 NOTE: In C++ you need to add `-fpermissive` and use a C++ compiler.
 <br> 
 <br>
