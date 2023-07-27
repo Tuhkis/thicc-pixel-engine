@@ -285,6 +285,14 @@ extern "C" {
 		return 0;
 #endif // TPE_WEB
 	}
+	INLINE bool T(keyDown)(T(Context) ctx, unsigned char k) {
+#ifndef TPE_WEB
+		return glfwGetKey(ctx.window, k) != GLFW_RELEASE;
+#else
+		return false;
+#endif // TPE_WEB
+	}
+
 #ifdef TPE_IMPL
 	
 	void T(putPixel)(T(Context) * ctx, int x, int y, unsigned char r, unsigned char g, unsigned char b ) {
@@ -319,14 +327,6 @@ extern "C" {
 			}
 		}
 
-	}
-
-	INLINE bool T(keyDown)(T(Context) ctx, unsigned char k) {
-#ifndef TPE_WEB
-		return glfwGetKey(ctx.window, k) != GLFW_RELEASE;
-#else
-		return false;
-#endif // TPE_WEB
 	}
 
 	void T(drawGlyph)(T(Context) * ctx, char* glyph, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b) {
