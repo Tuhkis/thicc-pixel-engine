@@ -14,6 +14,7 @@
 #define TPE_PIXEL_SIZE 5
 #endif // TPE_PIXEL_SIZE
 
+#ifdef TPE_IMPL
 #include <stdio.h>
 #include <stdbool.h>
 #include "external/glad/include/glad/glad.h"
@@ -35,7 +36,6 @@
 #define TPE_KEY(K) 0
 #endif // TPE_WEB
 
-#ifdef TPE_IMPL
 #ifdef __cplusplus
 extern "C" {
 #endif
