@@ -13,10 +13,13 @@
 #ifndef TPE_PIXEL_SIZE
 #define TPE_PIXEL_SIZE 5
 #endif // TPE_PIXEL_SIZE
+#ifndef TPE_FRAGMENT_SHADER
+#define TPE_FRAGMENT_SHADER TPE_DEFAULT_FRAGMENT_SHADER
+#endif // TPE_FRAGMENT_SHADER
 
 #ifdef TPE_IMPL
-#include <stdio.h>
-#include <stdbool.h>
+#include "stdio.h"
+#include "stdbool.h"
 #include "external/glad/include/glad/glad.h"
 #ifdef TPE_SOUND_ENABLED
 #include "external/miniaudio/miniaudio.h"
@@ -111,7 +114,7 @@ extern "C" {
 		// Intialise glfw
 #ifndef TPE_WEB
 		if(!glfwInit()) {
-			printf("Could not initialse glfw.\n");
+			printf("Could not initialse glfw.\n\0");
 			exit(-1);
 		}
 		glfwWindowHint(GLFW_SAMPLES, 0);
@@ -121,7 +124,7 @@ extern "C" {
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		ctx->window = glfwCreateWindow(TPE_W * TPE_PIXEL_SIZE, TPE_H * TPE_PIXEL_SIZE, winName, NULL, NULL);
 		if (!ctx->window) {
-			printf("Could not create GLFWwindow.\n");
+			printf("Could not create GLFWwindow.\n\0");
 			glfwTerminate();
 			exit(-1);
 		}
@@ -129,7 +132,7 @@ extern "C" {
 		glfwSwapInterval(1);
 
 		if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)){
-			printf("Failed to initialise GLAD.\n");
+			printf("Failed to initialise GLAD.\n\0");
 			exit(-1);
 		}
 #else
@@ -159,7 +162,7 @@ extern "C" {
 		glCompileShader(vertexShader);
 
 		// FRAGMENT SHADER
-		const char* fragmentShaderSource = "#version " TPE_SHADER_VERSION "\n"
+		const char* TPE_DEFAULT_FRAGMENT_SHADER = "#version " TPE_SHADER_VERSION "\n"
 			"out vec4 FragColor;\n"
 			"in vec2 texPos;\n"
 			"uniform sampler2D screen;\n"
@@ -168,7 +171,7 @@ extern "C" {
 			"FragColor = vec4(texture(screen, texPos).rgb, 1.0f);\n"
 			"}\0";
 		unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+		glShaderSource(fragmentShader, 1, &TPE_FRAGMENT_SHADER, NULL);
 		glCompileShader(fragmentShader);
 
 		// Shader program
@@ -216,7 +219,7 @@ extern "C" {
 		// Audio
 		ma_result result  = ma_engine_init(NULL, ctx->soundEngine);
 		if (result != MA_SUCCESS) {
-			printf("Could not initialise sound engine.\n");
+			printf("Could not initialise sound engine.\n\0");
 		}
 #endif // TPE_SOUND_ENABLED
 	}

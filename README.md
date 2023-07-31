@@ -22,3 +22,35 @@ gcc -lkernel32 -luser32 -lshell32 -lgdi32 -ladvapi32 -lopengl32 myfile.c
  - [GLFW](https://github.com/glfw/glfw)
  - [GLAD](https://github.com/Dav1dde/glad)
  - [STB](https://github.com/nothings/stb)
+
+## Usage
+There's examples in the demo folder. You need to generate the assets witht he python script in there.
+
+### Post-processing shader
+You can do something similar to this:
+```C
+#define TPE_FRAGMENT_SHADER myShaderSource
+#define TPE_IMPL
+#include "tpe.h"
+
+...
+
+int main() {
+ ...
+ myShaderSource = "#version " TPE_SHADER_VERSION "\n" // + The rest of your source.
+ tpe_Context ctx;
+	tpe_init(&ctx, "Game Window");
+	...
+}
+```
+<br>
+The default shader looks like such:
+```glsl
+// Shader version here.
+out vec4 FragColor;
+in vec2 texPos;
+uniform sampler2D screen;
+void main() {
+ FragColor = vec4(texture(screen, texPos).rgb, 1.0f);
+}
+```
