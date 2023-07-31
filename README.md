@@ -24,7 +24,7 @@ gcc -lkernel32 -luser32 -lshell32 -lgdi32 -ladvapi32 -lopengl32 myfile.c
  - [STB](https://github.com/nothings/stb)
 
 ## Usage
-There's examples in the demo folder. You need to generate the assets witht he python script in there.
+There's examples in the demo folder. You need to generate the assets with he python script in there.
 
 ### Post-processing shader
 You can do something similar to this:
