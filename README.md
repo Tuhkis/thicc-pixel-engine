@@ -46,8 +46,7 @@ int main() {
 <br>
 The default shader looks like such:
 <br>
-```glsl
-[SHADER VERSION HERE]
+```
 out vec4 FragColor;
 in vec2 texPos;
 uniform sampler2D screen;
