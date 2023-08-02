@@ -109,6 +109,8 @@ extern "C" {
 	void T(playSound)(T(Context) * ctx, const char* path);
 #endif // TPE_SOUND_ENABLED
 
+#ifdef TPE_IMPL
+
 	INLINE void T(init) (T(Context) * ctx, const char* winName) {
 		T(clearColor)(ctx, 0, 0, 0);
 		// Intialise glfw
@@ -296,7 +298,6 @@ extern "C" {
 #endif // TPE_WEB
 	}
 
-#ifdef TPE_IMPL
 	void T(putPixel)(T(Context) * ctx, int x, int y, unsigned char r, unsigned char g, unsigned char b ) {
 		unsigned int pixelIndex =
 			((y * TPE_W) + x)*3;
