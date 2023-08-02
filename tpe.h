@@ -2,7 +2,7 @@
 #define __TPE_H__
 
 // For debugging purposes
-#define TPE_IMPL
+// #define TPE_IMPL
 
 #ifndef TPE_W
 #define TPE_W 200
@@ -297,7 +297,6 @@ extern "C" {
 	}
 
 #ifdef TPE_IMPL
-	
 	void T(putPixel)(T(Context) * ctx, int x, int y, unsigned char r, unsigned char g, unsigned char b ) {
 		unsigned int pixelIndex =
 			((y * TPE_W) + x)*3;
