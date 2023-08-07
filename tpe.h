@@ -66,12 +66,10 @@ GLFWbool _glfwConnectNull(int platformID, _GLFWplatform* platform) {return (1 ==
 #endif // TPE_WEB
 #ifdef __cplusplus
 #define T(T) T
-#define INLINE extern inline
 namespace tpe {
 extern "C" {
 #else
 #define T(T) tpe_##T
-#define INLINE extern inline
 #endif // __cplusplus
 	
 	typedef struct {
@@ -88,20 +86,20 @@ extern "C" {
 #endif // TPE_SOUND_ENABLED
 	} T(Context);
 
-	INLINE void T(init) (T(Context) * ctx, const char* winName);
-	INLINE bool T(shouldClose)(T(Context) ctx);
-	INLINE void T(display)(T(Context) ctx);
-	INLINE void T(close)(T(Context) * ctx);
-	INLINE void T(clear)(T(Context) * ctx);
-	INLINE void T(clearColor)(T(Context) * ctx,
+	void T(init) (T(Context) * ctx, const char* winName);
+	bool T(shouldClose)(T(Context) ctx);
+	void T(display)(T(Context) ctx);
+	void T(close)(T(Context) * ctx);
+	void T(clear)(T(Context) * ctx);
+	void T(clearColor)(T(Context) * ctx,
 		const unsigned char r,
 		const unsigned char g,
 		const unsigned char b);
 	void T(putPixel)(T(Context) * ctx, int x, int y, unsigned char r, unsigned char g, unsigned char b );
-	INLINE float T(time)();
+	float T(time)();
 	void T(drawBuffer)(T(Context) * ctx, unsigned char* buf, unsigned short x, unsigned short y, unsigned short w, unsigned short h);
 	void T(drawBufferColorkey)(T(Context) * ctx, unsigned char* buf, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned char r, unsigned char g, unsigned b);
-	INLINE bool T(keyDown)(T(Context) ctx, unsigned char k);
+	bool T(keyDown)(T(Context) ctx, unsigned char k);
 	void T(drawGlyph)(T(Context) * ctx, char* glyph, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawText)(T(Context) * ctx, const char* text, unsigned short x, unsigned short y, unsigned char r, unsigned char g, unsigned char b);
 	void T(drawRect)(T(Context) * ctx, unsigned short x, unsigned short y, unsigned short w, unsigned short h, unsigned char r, unsigned char g, unsigned char b);
@@ -111,7 +109,7 @@ extern "C" {
 
 #ifdef TPE_IMPL
 
-	INLINE void T(init) (T(Context) * ctx, const char* winName) {
+	void T(init) (T(Context) * ctx, const char* winName) {
 		T(clearColor)(ctx, 0, 0, 0);
 		// Intialise glfw
 #ifndef TPE_WEB
@@ -226,13 +224,13 @@ extern "C" {
 #endif // TPE_SOUND_ENABLED
 	}
 
-	INLINE bool T(shouldClose)(T(Context) ctx) {
+	bool T(shouldClose)(T(Context) ctx) {
 #ifndef TPE_WEB
 		return glfwWindowShouldClose(ctx.window);
 #endif // TPE_WEB
 	}
 
-	INLINE void T(display)(T(Context) ctx) {
+	void T(display)(T(Context) ctx) {
 		glClearColor(1.f, .25f, .25f, 1.f);
 		glClear( GL_COLOR_BUFFER_BIT );
 
@@ -251,7 +249,7 @@ extern "C" {
 #endif // TPE_WEB
 	}
 
-	INLINE void T(close)(T(Context) * ctx) {
+	void T(close)(T(Context) * ctx) {
 #ifdef TPE_SOUND_ENABLED
 		ma_engine_uninit(ctx->soundEngine);
 #endif // TPE_SOUND_ENABLED
@@ -266,12 +264,12 @@ extern "C" {
 	}
 
 
-	INLINE void T(clear)(T(Context) * ctx) {
+	void T(clear)(T(Context) * ctx) {
 		memcpy(&ctx->pixels, ctx->clearPixels, TPE_W*TPE_H*3);
 		// memset(&ctx->pixels, ctx->)
 	}
 
-	INLINE void T(clearColor)(T(Context) * ctx,
+	void T(clearColor)(T(Context) * ctx,
 		const unsigned char r,
 		const unsigned char g,
 		const unsigned char b) {
@@ -283,14 +281,14 @@ extern "C" {
 
 	}
 
-	INLINE float T(time)() {
+	float T(time)() {
 #ifndef TPE_WEB
 		return glfwGetTime();
 #else
 		return 0;
 #endif // TPE_WEB
 	}
-	INLINE bool T(keyDown)(T(Context) ctx, unsigned char k) {
+	bool T(keyDown)(T(Context) ctx, unsigned char k) {
 #ifndef TPE_WEB
 		return glfwGetKey(ctx.window, k) != GLFW_RELEASE;
 #else
@@ -368,6 +366,5 @@ extern "C" {
 #endif // __cplusplus
 
 #undef T
-#undef INLINE
 
 #endif // __TPE_H__
